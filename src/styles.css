@@ -1,4 +1,31 @@
-.App {
-  font-family: sans-serif;
+* {
+  font-family: "Poppins";
+}
+h1 {
   text-align: center;
+  color: white;
+}
+
+.main-container {
+  padding: 20px;
+  height: 90vh;
+  box-sizing: content-box;
+  border: solid px red;
+  background-image: url("https://cdn.pixabay.com/photo/2017/08/30/01/05/milky-way-2695569_1280.jpg");
+}
+
+button {
+  color: black;
+  min-width: 64px;
+  line-height: 1.75rem;
+  background-color: white;
+  font-weight: 800;
+  border-radius: 8px;
+  font-size: medium;
+  cursor: pointer;
+}
+.btn-container-one {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

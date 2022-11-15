@@ -1,38 +1,19 @@
 import React, { useState } from "react";
-
+import arr from "./data.json";
 import {
-  Button,
   Typography,
   CardContent,
   Grid,
   Card,
-  Checkbox
+  Checkbox,
+  FormControlLabel,
+  CardHeader,
 } from "@material-ui/core";
 import "./styles.css";
 
-const arr1 = [
-  {
-    name: "sudhi",
-    status: false
-  },
-  {
-    name: "ankitha",
-    status: false
-  },
-  {
-    name: "shashank",
-    status: false
-  },
-  {
-    name: "reddy",
-    status: false
-  }
-];
-
 export default function App() {
-  const [data, setData] = useState(arr1);
+  const [data, setData] = useState(arr);
   const [selectedData, selectData] = useState([]);
-  const [values, setValues] = useState({});
 
   const handleChange = (val, id, type) => {
     if (type === "right") {
@@ -42,26 +23,12 @@ export default function App() {
     } else {
       let copyData = [...data];
       copyData[id] = val;
-      console.log("update", copyData);
       setData(copyData);
     }
   };
 
   const copyingData = (type) => {
     if (type === "right") {
-      selectData(selectedData.filter((f) => !f.status));
-      setData([
-        ...data,
-        ...selectedData
-          .filter((f) => f.status)
-          .map((f) => {
-            return {
-              ...f,
-              status: false
-            };
-          })
-      ]);
-    } else {
       setData(data.filter((f) => !f.status));
       selectData([
         ...selectedData,
@@ -70,73 +37,93 @@ export default function App() {
           .map((f) => {
             return {
               ...f,
-              status: false
+              status: false,
             };
-          })
+          }),
+      ]);
+    } else {
+      selectData(selectedData.filter((f) => !f.status));
+      setData([
+        ...data,
+        ...selectedData
+          .filter((f) => f.status)
+          .map((f) => {
+            return {
+              ...f,
+              status: false,
+            };
+          }),
       ]);
     }
   };
 
   console.log(selectedData);
   return (
-    <div className="App">
+    <div class="main-container">
+      <h1> Left Right List </h1>
       <Grid container>
         <Grid item xs={4} alignItems="center">
-          <Card>
-            <CardContent>
-              {data.map((item, index) => (
-                <div key={item.name + index} style={{ display: "flex" }}>
-                  <Checkbox
-                    checked={item.status}
-                    onChange={(e) => {
-                      handleChange(
-                        {
-                          ...item,
-                          status: e.target.checked
-                        },
-                        index
-                      );
-                    }}
-                  />
-                  <Typography>{item.name}</Typography>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+          <ListCompo handleChange={handleChange} data={data} type="left" />
         </Grid>
         <Grid item xs={4}>
-          <Button size="small" onClick={copyingData}>
-            {"-->"}
-          </Button>
-          <Button size="small" onClick={() => copyingData("right")}>
-            {"<--"}
-          </Button>
+          <div
+            className="btn-container-one"
+          >
+            <ButtonCompo type="left" copyingData={copyingData} />
+            <ButtonCompo type="right" copyingData={copyingData} />
+          </div>
         </Grid>
         <Grid item xs={4}>
-          <Card>
-            <CardContent>
-              {selectedData.map((item, index) => (
-                <div key={item.name + index} style={{ display: "flex" }}>
-                  <Checkbox
-                    checked={item.status}
-                    onChange={(e) => {
-                      handleChange(
-                        {
-                          ...item,
-                          status: e.target.checked
-                        },
-                        index,
-                        "right"
-                      );
-                    }}
-                  />
-                  <Typography>{item.name}</Typography>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+          <ListCompo
+            handleChange={handleChange}
+            data={selectedData}
+            type="right"
+          />
         </Grid>
       </Grid>
     </div>
   );
 }
+
+const ButtonCompo = ({ type, copyingData }) => {
+  return (
+    <div>
+      {type === "left" ? (
+        <button onClick={copyingData}>&#x2190;</button>
+      ) : (
+        <button onClick={() => copyingData(type)}>&#8594;</button>
+      )}
+    </div>
+  );
+};
+
+const ListCompo = ({ handleChange, data, type }) => {
+  return (
+    <Card>
+      <CardContent>
+        {data.map((item, index) => (
+          <div key={item.name + index} style={{ display: "flex" }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={item.status}
+                  onChange={(e) => {
+                    handleChange(
+                      {
+                        ...item,
+                        status: e.target.checked,
+                      },
+                      index,
+                      type
+                    );
+                  }}
+                />
+              }
+              label={item.name}
+            />
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+};
